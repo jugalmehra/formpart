@@ -121,7 +121,7 @@ function Formpart(){
              if(value.checked){
                  doctordetails.languages.push(value.value)
                  setDoctordetails({...doctordetails})
-             }else{      //doctorDetials[field].splice(doctorDetials[field].indexOf(value.value),1)
+             }else{      
                 doctordetails.languages.splice(languages.indexOf(value.value),1)
                 setDoctordetails({...doctordetails})
              }
