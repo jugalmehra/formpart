@@ -20,7 +20,7 @@ function Timingform(){
                     { label:'09:00 PM', value:21 },
                     { label:'10:00 PM', value:22 },]
 
-    const [doctortiming, setDotortiming] = useState({
+    const [doctortiming, setDoctortiming] = useState({
             Monday: [],
             Tuesday: [],
             Wednesday: [],
@@ -41,7 +41,7 @@ function Timingform(){
             let availability = res.doctor.availability;
             availability.forEach(el => {
                 doctortiming[el.day].push({from:el.from,to:el.to})
-                setDotortiming({...doctortiming})
+                setDoctortiming({...doctortiming})
             })
         })
         .catch(err => {
@@ -51,23 +51,57 @@ function Timingform(){
 
     },[])
 
+    //for handle change
+    const handleonchange = (day,index,value) => {
+        if(value.from === '' || value.from){
+            console.log(value)
+            doctortiming[day][index].from = value.from;
+            setDoctortiming({...doctortiming})
+            if(doctortiming[day][index].from === doctortiming[day][index].to){
+                doctortiming[day][index].to = '';
+                setDoctortiming({...doctortiming})
+            }
+        } else if(value.to === '' || value.to){
+            doctortiming[day][index].to =  value.to
+            setDoctortiming({...doctortiming})
+        } else{
+            console.log('error')
+        }
+
+    }
+
+    //for deleting timing slot
+    const Deleteslot = (day, index) =>{
+        doctortiming[day].splice(index,1)
+        setDoctortiming({...doctortiming})
+        console.log(doctortiming)
+    }
+
+    //for adding timing slots
+    const Addslot = (day) => {
+        console.log(day)
+        
+        doctortiming[day].push({from:'',to:''})
+        setDoctortiming({...doctortiming})
+    }
+
 
     const handleTimingpart = (day, index, value) =>{
 
         const fromoptions = Timings.map( (t,i) => {
             if(i===Timings.length-1) return null;
-            return <option  value={t.value}>{t.label}</option>
+            return <option key={t.value} value={t.value}>{t.label}</option>
         })
 
         const tooptions = Timings.map( (t,i) => {
             if(t.value <= value.from || i===0) return null;
-            return <option  value={t.value}>{t.label}</option>
+            return <option key={t.value} value={t.value}>{t.label}</option>
         })
 
         return(
             <>
                 <FormGroup key={index}>
-                    <Input type="select" value={value.from}>
+                    <Input type="select" value={value.from} onChange={(e) => handleonchange(day,index,{'from': Number(e.target.value) ? Number(e.target.value) : ''})} >
                         <option value="">Select Timings</option>
 
                         {fromoptions}
@@ -75,13 +109,14 @@ function Timingform(){
                     </Input>
                 </FormGroup>
                 <FormGroup key={index}>
-                    <Input type="select" value={value.to}>
+                    <Input type="select" value={value.to} onChange={(e) => handleonchange(day,index,{'to': Number(e.target.value) ? Number(e.target.value) : ''})} >
                         <option value="">Select Timings</option>
 
                         {tooptions}
 
                     </Input>
                 </FormGroup>
+                <Button onClick={() => Deleteslot(day,index) }>Delete Slot</Button>
             </>
         );
     }
@@ -117,39 +152,39 @@ function Timingform(){
     return(
         <div>
             <FormGroup>
-                <Label>Monday</Label><br/>
+                <Label>Monday</Label> {' '} <Button onClick={() => Addslot('Monday') }>Add</Button><br/>
                 <div>
                     {mondaytimings}
                 </div>
             </FormGroup>
             <hr/>
             <FormGroup>
-                <Label>Tuesday</Label><br/>
+                <Label>Tuesday</Label> {' '}  <Button onClick={() => Addslot('Tuesday') }>Add</Button><br/>
                 {tuesdaytimings}
             </FormGroup>
             <hr/>
             <FormGroup>
-                <Label>Wednesdaay</Label><br/>
+                <Label>Wednesday</Label> {' '}  <Button onClick={() => Addslot('Wednesday') }>Add</Button><br/>
                {wednesdaytimings}
             </FormGroup>
             <hr/>
             <FormGroup>
-                <Label>Thursday</Label><br/>
+                <Label>Thursday</Label> {' '}  <Button onClick={() => Addslot('Thursday') }>Add</Button><br/>
                 {thursddaytimings}
             </FormGroup>
             <hr/>
             <FormGroup>
-                <Label>Friday</Label><br/>
+                <Label>Friday</Label> {' '}  <Button onClick={() => Addslot('Friday') }>Add</Button><br/>
                 {fridaytimings}
             </FormGroup>
             <hr/>
             <FormGroup>
-                <Label>Saturday</Label><br/>
+                <Label>Saturday</Label> {' '}  <Button onClick={() => Addslot('Saturday') }>Add</Button><br/>
                 {saturdaytimings}
             </FormGroup>
             <hr/>
             <FormGroup>
-                <Label>Sunday</Label><br/>
+                <Label>Sunday</Label> {' '}  <Button onClick={() => Addslot('Sunday') }>Add</Button><br/>
                 {sundaytimings}
             </FormGroup>
         </div>
